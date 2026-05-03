@@ -12,8 +12,11 @@ try:
     response.raise_for_status()  # Raise an error for bad status codes
     data = response.json()
     
-    # Send the full JSON data as a string to Discord
-    message = str(data)
+    # Send a summary of the data to Discord (to avoid message length limits)
+    total = data.get('total', 0)
+    todos = data.get('todos', [])
+    first_todo = todos[0]['todo'] if todos else 'No todos available'
+    message = f"Total todos: {total}. First todo: {first_todo}"
     
     # Send the message to Discord webhook
     webhook_response = requests.post(webhook_url, json={'content': message})
